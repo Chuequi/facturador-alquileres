@@ -1,0 +1,10 @@
+# Nunca subir datos de inquilinos
+*.xlsx
+*.xls
+*.csv
+*.pdf
+*.zip
+salida/
+facturas_arca/
+__pycache__/
+.DS_Store

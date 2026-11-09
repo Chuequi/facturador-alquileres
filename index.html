@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Facturas de alquileres</title>
+<style>
+  :root { --bg:#f4f5f7; --card:#fff; --ink:#1d2330; --muted:#5d6676; --accent:#1f6feb; --ok:#1a7f37; --warn:#9a6700; --line:#d9dde3; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:18px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:860px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:28px; margin:8px 0 4px; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  .paso { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:20px; margin-bottom:18px; }
+  .paso h2 { font-size:20px; margin:0 0 12px; display:flex; gap:10px; align-items:center; }
+  .num { background:var(--accent); color:#fff; border-radius:50%; width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; font-size:16px; flex:none; }
+  .btn { font:inherit; font-weight:600; border:0; border-radius:12px; padding:16px 26px; background:var(--accent); color:#fff; cursor:pointer; }
+  .btn:disabled { background:#9aa4b2; cursor:default; }
+  .btn.grande { font-size:22px; padding:20px 34px; width:100%; }
+  .btn.chico { padding:6px 12px; font-size:14px; border-radius:8px; background:#e8eefc; color:var(--accent); }
+  label.archivo { display:block; border:2px dashed var(--line); border-radius:12px; padding:22px; text-align:center; cursor:pointer; }
+  label.archivo:hover { border-color:var(--accent); }
+  input[type=file] { display:none; }
+  .campos { display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; }
+  .campos label { font-size:15px; color:var(--muted); display:flex; flex-direction:column; gap:4px; }
+  .campos input { font:inherit; padding:8px 10px; border:1px solid var(--line); border-radius:8px; width:170px; }
+  table { width:100%; border-collapse:collapse; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  td.n, th.n { text-align:right; white-space:nowrap; }
+  .tag { font-size:13px; font-weight:600; padding:2px 8px; border-radius:999px; background:#fff4d6; color:var(--warn); white-space:nowrap; }
+  .msg { padding:12px 14px; border-radius:10px; margin-top:12px; }
+  .msg.ok { background:#dafbe1; color:var(--ok); }
+  .msg.err { background:#ffebe9; color:#a40e26; }
+  .oculto { display:none; }
+  .scroll { overflow-x:auto; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Facturas de alquileres</h1>
+  <p class="sub">Genera los comprobantes X del mes y la lista de honorarios para hacer en ARCA.</p>
+
+  <section class="paso">
+    <h2><span class="num">1</span> Elegí el Excel del mes</h2>
+    <label class="archivo" id="zona">
+      <input type="file" id="archivo" accept=".xlsx,.xls">
+      <strong>Tocá acá para elegir el archivo</strong><br>
+      <span class="sub" id="nombreArchivo">o arrastralo a este recuadro</span>
+    </label>
+    <div class="campos">
+      <label>Fecha de emisión <input type="date" id="fecha"></label>
+      <label>Primer número <input type="number" id="numero" min="1" value="1"></label>
+    </div>
+    <div id="error" class="msg err oculto"></div>
+  </section>
+
+  <section class="paso oculto" id="paso2">
+    <h2><span class="num">2</span> Revisá que esté todo</h2>
+    <div class="scroll"><table id="tabla"></table></div>
+  </section>
+
+  <section class="paso oculto" id="paso3">
+    <h2><span class="num">3</span> Generá las facturas</h2>
+    <button class="btn grande" id="generar">Generar facturas</button>
+    <div id="listo" class="msg ok oculto"></div>
+  </section>
+
+  <section class="paso oculto" id="paso4">
+    <h2><span class="num">4</span> Estos hacerlos en ARCA</h2>
+    <p class="sub" style="margin-bottom:8px">Solo los honorarios. Tocá "Copiar" y pegalo en ARCA.</p>
+    <div class="scroll"><table id="arca"></table></div>
+  </section>
+</main>
+
+<script src="lib/jspdf.umd.min.js"></script>
+<script src="lib/xlsx.full.min.js"></script>
+<script src="lib/jszip.min.js"></script>
+<script src="factura.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
