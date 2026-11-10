@@ -12,8 +12,6 @@ let datos = null;   // { inquilinos, omitidos }
 const esHonorario = (c) => Listado.esHonorario(c);
 const pesos = (n) => "$ " + n.toLocaleString("es-AR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch { /* sin almacenamiento */ } };
-const leer = (k) => { try { return localStorage.getItem(k); } catch { return null; } };
 
 function hoyISO() {
   const d = new Date();
@@ -103,7 +101,10 @@ async function generar() {
   try {
     const fecha = fechaAR($("fecha").value);
     const etiqueta = $("mes").value;
-    let numero = parseInt($("numero").value, 10) || 1;
+    // Número = AAMM + orden en el mes (dic 2026 -> 26120001, 26120002, ...).
+    // Así no depende de qué PC se use: cada mes arranca en 0001.
+    const { a: anio, m: mesNum } = periodo();
+    let numero = ((anio % 100) * 100 + mesNum) * 10000 + 1;
     const copias = String(EMISOR.copias).split(",").map((s) => s.trim()).filter(Boolean);
     const pv = String(EMISOR.punto_venta).padStart(5, "0");
     const zip = new JSZip();
@@ -144,9 +145,7 @@ async function generar() {
     a.download = `Liquidaciones ${etiqueta}.zip`;
     document.body.appendChild(a); a.click(); a.remove();
 
-    guardar("proximo_numero", String(numero));
-    $("listo").innerHTML = `Listo: ${cantidad} liquidaciones por ${pesos(suma)}. Se descargó <strong>Liquidaciones ${etiqueta}.zip</strong>.<br>
-      El próximo mes empezá desde el número <strong>${numero}</strong>.`;
+    $("listo").innerHTML = `Listo: ${cantidad} liquidaciones por ${pesos(suma)}. Se descargó <strong>Liquidaciones ${etiqueta}.zip</strong>.`;
     $("listo").classList.remove("oculto");
     mostrarArca(enArca);
   } catch (e) {
@@ -183,7 +182,6 @@ document.addEventListener("change", (e) => {
 
 llenarMeses();
 $("fecha").value = hoyISO();
-$("numero").value = leer("proximo_numero") || 1;
 $("mes").addEventListener("change", procesar);
 $("archivo").addEventListener("change", (e) => e.target.files[0] && cargar(e.target.files[0]));
 $("generar").addEventListener("click", generar);
