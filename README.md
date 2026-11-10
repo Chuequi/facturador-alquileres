@@ -22,6 +22,9 @@ columna D dice "Alquiler" (columna A: `APELLIDO NOMBRE (Propietario) DNI ...`) y
 se muestra como "Por cuenta y orden alq. <mes>". Los conceptos que dicen "honor..." van a la
 lista de ARCA y no a la liquidación. Los datos del emisor están en `config.js`.
 
+Numeración: AAMM + orden dentro del mes (diciembre 2026: 26120001, 26120002, ...), así no
+depende de la PC que se use.
+
 ## Estructura
 - `index.html`, `app.js`: la página.
 - `listado.js`: lectura del listado mensual.
